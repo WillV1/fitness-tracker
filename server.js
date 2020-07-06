@@ -19,6 +19,15 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { use
 
 require("./routes/api-routes.js")(app);
 
+db.totalDuration.aggregate([ {
+    $group: {
+       _id: null,
+       "TotalMinutes": {
+           $sum: "$duration"
+        }
+     }
+  } ] );
+
 db.Workout.deleteMany({})
 //   .then(() => db.Workout.collection.insertMany(workoutSeed))
 //   .then(data => {

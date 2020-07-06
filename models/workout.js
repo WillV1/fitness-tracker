@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const WorkoutSchema = new Schema({
     
-    //   day: new Date().setDate(new Date().getDate()-10),
+      day: new Date().setDate(new Date().getDate()-10),
       exercises: [
         {
             type: Schema.Types.ObjectId,

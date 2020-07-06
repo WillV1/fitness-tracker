@@ -5,44 +5,77 @@ module.exports = function (app) {
 
     app.get("/api/workouts", (req, res) => {
         db.Workout.find({})
-            // .then(dbNote => {
-            //     res.json(dbNote);
-            // })
-            // .catch(err => {
-            //     res.json(err);
-            // });
+            .then(dbWorkout => {
+                res.json(dbWorkout);
+            })
+            .catch(err => {
+                res.json(err);
+            });
     });
 
     app.post("/api/workouts", ({ body }, res) => {
-        db.Workout.create(body)
-            // .then(({ _id }) => db.User.findOneAndUpdate({}, { $push: { notes: _id } }, { new: true }))
-            // .then(dbUser => {
-            //     res.json(dbUser);
-            // })
-            // .catch(err => {
-            //     res.json(err);
-            // });
+        db.Exercise.create(body)
+            .then(({ _id }) => db.Workout.findOneAndUpdate({}, { $push: { exercises: _id } }, { new: true }))
+            .then(dbWorkout => {
+                res.json(dbWorkout);
+            })
+            .catch(err => {
+                res.json(err);
+            });
     });
 
     app.put("/api/workouts/:id", (req, res) => {
-        db.Workout.update(
-            // {
-            //     _id: mongojs.ObjectId(req.params.id)
-            // },
-            // {
-            //     $set: {
-            //         title: req.body.title,
-            //         note: req.body.note,
-            //         modified: Date.now()
-            //     }
-            // },
-            // (error, data) => {
-            //     if (error) {
-            //         res.send(error);
-            //     } else {
-            //         res.send(data);
-            //     }
-            // }
-        );
+        db.Workout.findByIdAndUpdate(req.params.id, {
+            type: "resistance", name: "bench",
+            duration: 20, weight: 200, reps: 3, sets: 1
+        }, function (err) {
+            if (err) {
+                return res.send(err);
+            }
+            console.log({ message: "workout updated" });
+        });
     });
-};  
+
+
+app.get("/api/workouts/range", (req, res) => {
+    const id = req.params.id;
+    const days = parseInt(req.params.days);
+
+    let now = new Date(),
+        firstDate = new Date(now.valueOf() - (1000 * 60 * 60 * 24 * days));
+
+    Workout.aggregate([
+        {
+            "$match": {
+                "_id": ObjectId(id),
+                "workoutStats": {
+                    "$elemMatch": { "createdOn": { "$gte": firstDate, "$lt": now } }
+                }
+            }
+        },
+        {
+            "$project": {
+                "workoutStats": {
+                    "$filter": {
+                        "input": "$workoutStats",
+                        "as": "el",
+                        "cond": {
+                            "$and": [
+                                { "$gte": ["$$el.createdOn", firstDate] },
+                                { "$lt": ["$$el.createdOn", now] }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    ], function (err, res) {
+        res.json(dbWorkout);
+    })
+        .catch(err => {
+            res.json(err);
+        });
+
+});
+};
+
