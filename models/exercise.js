@@ -4,8 +4,18 @@ const Schema = mongoose.Schema;
 
 const ExerciseSchema = new Schema({
       type: String,
-      name: String,
-      duration: Number,
+      
+      //make this required
+      
+      name: {
+            type: String,
+            required: "Name is a required field.",
+      },
+      duration: {
+      type: Number,
+            required: "Duration is a required field.",
+      },
+
       weight: Number,
       reps: Number,
       sets: Number

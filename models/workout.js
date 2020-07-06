@@ -1,16 +1,27 @@
 const mongoose = require("mongoose");
+const Exercise = require("./exercise")
 
 const Schema = mongoose.Schema;
 
 const WorkoutSchema = new Schema({
     
-      day: new Date().setDate(new Date().getDate()-10),
+      day: 
+      {
+        type: Date,
+        default: () => new Date()
+      },
       exercises: [
         {
             type: Schema.Types.ObjectId,
             ref: "Exercise"
         }
       ]
+});
+
+WorkoutSchema.virtual('duration').get(function () {
+  return this.exercises.reduce(
+    ( accumulator, currentValue ) => accumulator + currentValue.duration,
+    0)
 });
 
 const Workout = mongoose.model("Workout", WorkoutSchema);
