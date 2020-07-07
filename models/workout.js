@@ -45,7 +45,10 @@ const workoutSchema = new Schema(
 
 workoutSchema.virtual('totalDuration').get(function () {
   return this.exercises.reduce(
-    (accumulator, currentValue) => { accumulator + currentValue.duration },
+    (accumulator, currentValue) => { 
+      console.log(accumulator + currentValue.duration)
+      return accumulator + currentValue.duration 
+    },
     0)
 });
 
