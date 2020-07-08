@@ -18,11 +18,11 @@ module.exports = function (app) {
     app.post("/api/workouts", ({ body }, res) => {
         console.log("POST")
         db.Workout.create(body)
-        //    .then(({ _id }) => db.Workout.findOneAndUpdate({_id: _id}, 
-        //     { $push: { exercises: _id } }, { new: true }))
+            //    .then(({ _id }) => db.Workout.findOneAndUpdate({_id: _id}, 
+            //     { $push: { exercises: _id } }, { new: true }))
             .then(dbWorkout => {
                 console.log(dbWorkout)
-              return res.json(dbWorkout);
+                return res.json(dbWorkout);
             })
             .catch(err => {
                 res.json(err);
@@ -33,14 +33,13 @@ module.exports = function (app) {
         console.log("PUT:", req.params, req.body)
         db.Workout.findByIdAndUpdate(req.params.id, {
             $push: { exercises: req.body }
-        }, function (err) {
-            if (err) {
-                return res.send(err);
-            }
+        }).then(dbWorkout => {
             console.log({ message: "workout updated" });
-            console.log(dbWorkout)
-              return res.json(dbWorkout);
-        });
+            return res.json(dbWorkout);
+        })
+            .catch(err => {
+                res.json(err);
+            })
     });
 
 
