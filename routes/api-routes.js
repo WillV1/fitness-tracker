@@ -48,8 +48,9 @@ module.exports = function (app) {
         const id = req.params.id;
         const days = parseInt(req.params.days);
 
-        db.Workout.find({})
-            .limit(7).then(dbWorkout => {
+        // db.Workout.find({})
+                db.Workout.find().sort({_id:-1}).limit(7).then(dbWorkout => {
+            // .limit(7).then(dbWorkout => {
                 console.log(dbWorkout);
                 res.json(dbWorkout);
             }).catch(err => {
