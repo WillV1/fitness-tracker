@@ -5,7 +5,7 @@
 
 ## Description
   
-This app allows the user to add newworkouts, update existing workouts and track results of prior workouts up to a week.
+This app allows the user to add new workouts, update existing workouts and track results of prior workouts up to a week. The application utilizes a MongoDB database, along with Mongoose for the storage of workout data.
 
 ## Table of Contents
 
